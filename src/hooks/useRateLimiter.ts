@@ -1,6 +1,6 @@
-import { useEffect, useState } from "react";
-import { mockApiBuyCorn } from "../api/mockApi";
-import type { LogEntry } from "../views/views.types";
+import { useEffect, useState } from 'react';
+import { apiBuyCorn } from '../api/Api';
+import type { LogEntry } from '../views/view.types';
 
 export const useRateLimiter = () => {
   const [cornCount, setCornCount] = useState<number>(0);
@@ -10,34 +10,40 @@ export const useRateLimiter = () => {
   const [lastBuyTime, setLastBuyTime] = useState<number>(0);
   const [cooldown, setCooldown] = useState<number>(0);
 
-useEffect(() => {
+  useEffect(() => {
     if (lastBuyTime === 0) return;
     const interval = setInterval(() => {
       const remaining = Math.max(0, 60000 - (Date.now() - lastBuyTime));
       setCooldown(Math.ceil(remaining / 1000));
-      if (remaining <= 0) clearInterval(interval);
+      if (remaining <= 0) {
+        setError(null);
+        clearInterval(interval);
+      }
     }, 1000);
     return () => clearInterval(interval);
   }, [lastBuyTime]);
-
 
   const handleBuy = async (): Promise<void> => {
     setLoading(true);
     setError(null);
     try {
-      const response = await mockApiBuyCorn();
-      const newLog: LogEntry = { time: new Date().toLocaleTimeString(), action: 'POST /buy-corn', status: response.status };
-      setHistory(prev => [newLog, ...prev]);
+      const response = await apiBuyCorn();
+      const newLog: LogEntry = {
+        time: new Date().toLocaleTimeString(),
+        action: 'POST /buy-corn',
+        status: response.status,
+      };
+      setHistory((prev) => [newLog, ...prev]);
 
       if (response.status === 200) {
-        setCornCount(prev => prev + 1);
+        setCornCount((prev) => prev + 1);
         setLastBuyTime(Date.now());
         setCooldown(60);
       } else if (response.status === 429) {
-        setError("¡Demasiado rápido! Bob es un granjero justo (1 maíz/min).");
+        setError('Too fast! Bob is a fair farmer (1 corn per minute)');
       }
     } catch (err) {
-      setError("Error de conexión con la granja.");
+      setError('Farm connection error.');
       console.error(err);
     } finally {
       setLoading(false);

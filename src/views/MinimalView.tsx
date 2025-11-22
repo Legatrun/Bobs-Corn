@@ -1,11 +1,20 @@
-import { AlertCircle, Wheat } from "lucide-react";
-import { Button } from "../components/ui/Button";
-import type { ViewProps } from "./views.types";
+import React from 'react';
+import { AlertCircle, Wheat } from 'lucide-react';
+import { Button } from '../components/ui/Button';
+import type { ViewProps } from './view.types';
 
-export const MinimalView: React.FC<ViewProps> = ({ cornCount, handleBuy, loading, cooldown, error }) => (
+export const MinimalView: React.FC<ViewProps> = ({
+  cornCount,
+  handleBuy,
+  loading,
+  cooldown,
+  error,
+}) => (
   <div className="flex flex-col items-center justify-center h-full space-y-8 p-6 animate-in fade-in duration-500">
     <div className="text-center space-y-2">
-      <h2 className="text-zinc-500 font-medium uppercase tracking-widest text-sm">Tu Inventario</h2>
+      <h2 className="text-zinc-500 font-medium uppercase tracking-widest text-sm">
+        Your inventory
+      </h2>
       <div className="text-8xl font-black text-zinc-900 tracking-tighter flex items-center gap-4">
         <span>{cornCount}</span>
         <Wheat className="w-20 h-20 text-yellow-500" />
@@ -13,12 +22,16 @@ export const MinimalView: React.FC<ViewProps> = ({ cornCount, handleBuy, loading
     </div>
 
     <div className="w-full max-w-xs">
-      <Button 
-        onClick={handleBuy} 
-        disabled={loading || cooldown > 0} 
+      <Button
+        onClick={handleBuy}
+        disabled={loading || cooldown > 0}
         className="w-full h-16 text-xl rounded-full shadow-lg active:scale-95 transition-transform"
       >
-        {loading ? 'Procesando...' : cooldown > 0 ? `Espera ${cooldown}s` : 'COMPRAR MAÍZ'}
+        {loading
+          ? 'Processing...'
+          : cooldown > 0
+            ? `Please wait ${cooldown}s`
+            : 'Buy corn'}
       </Button>
     </div>
 
