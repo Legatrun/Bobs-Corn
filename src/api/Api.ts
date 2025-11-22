@@ -12,7 +12,19 @@ export const apiBuyCorn = async (): Promise<ApiResponse> => {
   try {
     const response = await fetch(endpoint, {
       method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({}),
     });
+
+    if (response.ok) {
+      const data = await response.json();
+      return {
+        status: response.status,
+        message: data.message,
+      };
+    }
 
     return {
       status: response.status,
