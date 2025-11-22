@@ -10,7 +10,6 @@ export const GamifiedView: React.FC<ViewProps> = ({
   loading,
   cooldown,
 }) => {
-  // Calculamos el porcentaje para la barra de progreso (60s = 100%)
   const progress = Math.min(100, ((60 - cooldown) / 60) * 100);
 
   return (
